@@ -1,7 +1,7 @@
 # CPC357PROJECT_164952_164856
 # 🏙️ Urban Noise Monitoring & Classification System
 
-An end-to-end IoT solution utilizing **Edge AI (TinyML)**, **Google Cloud Platform (GCP)**, and **BigQuery** to monitor, classify, and visualize urban noise pollution in alignment with **UN Sustainable Development Goal (SDG) 11: Sustainable Cities and Communities**.
+An end-to-end IoT solution utilizing **Edge AI (TinyML)**, **Google Cloud Platform (GCP)**, and **BigQuery** to monitor, classify and visualize urban noise pollution in alignment with **UN Sustainable Development Goal (SDG) 11: Sustainable Cities and Communities**.
 
 ## 📌 Project Overview
 Urban noise pollution is a significant challenge affecting the health and livability of city residents. This project addresses the issue by deploying an intelligent acoustic sensor using a **Maker Feather S3 (ESP32-S3)** and an **INMP441 Digital Microphone**. Unlike traditional sensors, this system uses an on-device **1D-CNN model** to classify specific sounds (Sirens, Drilling, Car Horns, etc.) locally, ensuring data privacy and reducing cloud latency.
@@ -56,7 +56,7 @@ The **INMP441** was selected for its high-fidelity 24-bit digital output, provid
 
 ---
 
-## [cite_start]🚀 Setup & Installation Instructions
+## 🚀 Setup & Installation Instructions
 
 ### **1. Data Preparation & AI Training**
 1.  Install Python dependencies: `pip install -r requirements.txt`.
