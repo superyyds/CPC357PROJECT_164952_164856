@@ -107,5 +107,5 @@ The following libraries and environments must be installed to reproduce the syst
 - **University:** Universiti Sains Malaysia (USM)
 - **Deadline:** 11 January 2026
 - **Group Members:**
-    1. Marcus Tan Tung Chean - 164952
-    2. Ng Zi jian - 164856
+    1. [Marcus Tan Tung Chean](https://github.com/Sn0wman8) - 164952
+    2. [Ng Zi jian](https://github.com/superyyds) - 164856
