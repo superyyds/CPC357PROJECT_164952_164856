@@ -86,7 +86,7 @@ The **INMP441** was selected for its high-fidelity 24-bit digital output, provid
 
 ## 🔗 Project Links
 * **YouTube Demo Video:** https://youtu.be/5veEfZpiqVA
-* **Looker Studio Dashboard:** [CPC357-Project](https://lookerstudio.google.com/) 
+* **Looker Studio Dashboard:** [CPC357-Project](https://lookerstudio.google.com/reporting/f1bddb94-dd8f-44fd-a2ad-c9480ff11f2c) 
 * **GitHub Repository:** https://github.com/superyyds/CPC357PROJECT_164952_164856.git
 
 ## 👥 Group 30 Details 
