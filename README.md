@@ -18,7 +18,7 @@ Urban noise pollution is a significant challenge affecting the health and livabi
 To ensure reproducibility, this repository is organized as follows:
 
 * **`cpcproject_inference.ino`**: The main firmware for the Maker Feather S3. It handles I2S audio capture, local TinyML inference, NTP time synchronization and dual communication (MQTT + Telegram).
-* **`dataset_prep.py`**: A preprocessing script that resamples the UrbanSound8K dataset to 16kHz, standardizes audio to 4.0s, and creates a mixed-audio test set for robust validation.
+* **`dataset_prep.py`**: A preprocessing script that resamples the UrbanSound8K dataset to 16kHz, standardizes audio to 4.0s and creates a mixed-audio test set for robust validation.
 * **`Background_noise.ipynb`**: A Jupyter notebook used for data engineering. It applies pink noise filters for augmentation and generates a dedicated `background_noise` class to improve model accuracy.
 * **`nano_bridge_gcp.py`**: The cloud-side Python bridge deployed on a GCP VM. It subscribes to the MQTT topic and streams incoming detection metadata into Google BigQuery.
 * **`requirements.txt`**: List of Python dependencies (librosa, paho-mqtt, etc.) required for the data preparation and cloud bridge scripts.
@@ -62,7 +62,7 @@ The **INMP441** was selected for its high-fidelity 24-bit digital output, provid
 1.  Install Python dependencies: `pip install -r requirements.txt`.
 2.  Execute `dataset_prep.py` to standardize the UrbanSound8K samples.
 3.  Run `Background_noise.ipynb` for data augmentation (pink noise) and class generation.
-4.  Upload the prepared data to **Edge Impulse Studio**, train the model, and export the Arduino library (`.zip`).
+4.  Upload the prepared data to **Edge Impulse Studio**, train the model and export the Arduino library (`.zip`).
 
 ### **2. Telegram Alerting Setup**
 1.  **Create Bot:** Search for **@BotFather** on Telegram and use `/newbot` to get your **API Token**.
