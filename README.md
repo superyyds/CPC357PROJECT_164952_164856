@@ -4,38 +4,45 @@
 An end-to-end IoT solution utilizing **Edge AI (TinyML)**, **Google Cloud Platform (GCP)**, and **BigQuery** to monitor, classify, and visualize urban noise pollution in alignment with **UN Sustainable Development Goal (SDG) 11: Sustainable Cities and Communities**.
 
 ## 📌 Project Overview
+Urban noise pollution is a significant challenge affecting the health and livability of city residents. This project addresses the issue by deploying an intelligent acoustic sensor using a **Maker Feather S3 (ESP32-S3)** and an **INMP441 Digital Microphone**. Unlike traditional sensors, this system uses an on-device **1D-CNN model** to classify specific sounds (Sirens, Drilling, Car Horns, etc.) locally, ensuring data privacy and reducing cloud latency.
 
-Urban noise pollution is a significant challenge affecting the health and livability of city residents. This project addresses the issue by deploying an intelligent acoustic sensor using a **Maker Feather S3 (ESP32-S3)** and an **INMP441 Digital Microphone**3. Unlike traditional sensors, this system uses an on-device **1D-CNN model** to classify specific sounds (Sirens, Drilling, Car Horns, etc.) locally, ensuring data privacy and reducing cloud latency.
+### **Key Features (Code-Specific)**
+* **Context-Aware Alerting:** Drilling notifications are prioritized during "Quiet Hours" (8:00 PM - 8:00 AM) to monitor municipal noise violations.
+* **Local RMS Noise Gate:** A firmware-level threshold (3150 RMS) filters out silence to optimize power and reduce unnecessary cloud data ingestion.
+* **High-Fidelity Sensing:** Utilizes I2S protocol to capture 16kHz audio for robust AI inference.
+* **Hybrid Alerting:** Immediate local feedback via status LEDs and remote mobile notifications via Telegram.
 
-### **Key Features**
+---
 
-- **Edge AI Inference:** Real-time multi-label sound classification performed on-device.
-- **RMS Noise Gate:** Energy-based filtering in firmware to optimize power and reduce unnecessary cloud ingestion.
-- **Direct-to-App Alerting:** Priority SSL/TLS alerts sent directly from the hardware to **Telegram** for emergency events (Sirens/Drilling).
-- **Cloud Data Pipeline:** Secure MQTT streaming to **Google BigQuery** for long-term historical storage.
-- **Live Analytics:** Interactive **Looker Studio** dashboard for urban planning and trend analysis.
+## 📂 Repository Structure & File Descriptions
+To ensure reproducibility, this repository is organized as follows:
+
+* **`cpcproject_inference.ino`**: The main firmware for the Maker Feather S3. It handles I2S audio capture, local TinyML inference, NTP time synchronization, and dual communication (MQTT + Telegram).
+* **`dataset_prep.py`**: A preprocessing script that resamples the UrbanSound8K dataset to 16kHz, standardizes audio to 4.0s, and creates a mixed-audio test set for robust validation.
+* **`Background_noise.ipynb`**: A Jupyter notebook used for data engineering. It applies pink noise filters for augmentation and generates a dedicated `background_noise` class to improve model accuracy.
+* **`nano_bridge_gcp.py`**: The cloud-side Python bridge deployed on a GCP VM. It subscribes to the MQTT topic and streams incoming detection metadata into Google BigQuery.
+* **`requirements.txt`**: List of Python dependencies (librosa, paho-mqtt, etc.) required for the data preparation and cloud bridge scripts.
+* **`ei-cpc357-project-arduino-1.0.9.zip`**: The exported Edge Impulse C++ library containing the trained model parameters and inference engine.
 
 ---
 
 ## 🏗️ System Architecture
+The project follows a professional 4-tier IoT architecture:
+1.  **Perception Layer:** Maker Feather S3 + INMP441 Microphone (I2S Interface).
+2.  **Network Layer:** WiFi connectivity utilizing MQTT (Mosquitto) and HTTPS (Telegram API) protocols.
+3.  **Middleware Layer:** Python-based bridge running on a GCP Compute Engine VM.
+4.  **Application Layer:** BigQuery warehouse and Looker Studio visualization.
 
-The project follows a 4-tier IoT architecture:
 
-1. **Perception Layer:** Maker Feather S3 + INMP441 Microphone (I2S Interface).
-2. **Network Layer:** WiFi connectivity utilizing MQTT (Mosquitto) and HTTPS (Telegram API).
-3. **Middleware Layer:** Python-based bridge running on a GCP Compute Engine VM.
-4. **Application Layer:** BigQuery warehouse and Looker Studio visualization.
 
 ---
 
 ## 🛠️ Hardware Setup & Wiring
+The **INMP441** was selected for its high-fidelity 24-bit digital output, providing superior acoustic data for AI classification compared to analog alternatives.
 
-The choice of the **INMP441** is justified by its high-fidelity digital output, which provides superior acoustic data for AI classification compared to analog alternatives.
-
-### **Wiring & Pin Mapping**
-
-| **Component** | **Pin** | **Maker Feather S3 Pin** | **Breadboard Location** |
-| --- | --- | --- | --- |
+### **Pin Mapping & Connectivity**
+| Component | Pin | Maker Feather S3 Pin | Breadboard Location |
+| :--- | :--- | :--- | :--- |
 | **INMP441 Mic** | SD | GPIO 39 | C25 |
 | **INMP441 Mic** | VDD | 3V3 | C26 |
 | **INMP441 Mic** | GND | GND | C27 |
@@ -45,67 +52,49 @@ The choice of the **INMP441** is justified by its high-fidelity digital output, 
 | **Red LED** | Anode | GPIO A0 | I24 |
 | **Green LED** | Anode | GPIO A1 | I30 |
 
----
 
-## 💻 Software Dependencies & Requirements
-
-The following libraries and environments must be installed to reproduce the system:
-
-### **1. Arduino IDE (Edge Tier)**
-
-- **Edge Impulse SDK:** Your custom exported library from Edge Impulse Studio.
-- **Paho MQTT:** To manage communication with the GCP broker.
-- **ArduinoJson:** To serialize classification results into JSON strings.
-- **UniversalTelegramBot:** To interface with the Telegram API.
-
-### **2. Cloud Tier (GCP VM)**
-
-- **Mosquitto Broker:** MQTT middleware installed on a Linux VM.
-- **Python 3.8+:** With the following packages:Bash
-    
-    `pip install paho-mqtt google-cloud-bigquery`
-    
 
 ---
 
-🚀 Setup & Installation Instructions 
+## [cite_start]🚀 Setup & Installation Instructions
 
-### **1. AI Model Training**
-
-- Upload audio datasets to **Edge Impulse Studio**.
-- Train a **Conv1D** classification model using **Sigmoid** activation and **Binary Crossentropy**.
-- Export the model as an **Arduino Library** and add it to your IDE.
+### **1. Data Preparation & AI Training**
+1.  Install Python dependencies: `pip install -r requirements.txt`.
+2.  Execute `dataset_prep.py` to standardize the UrbanSound8K samples.
+3.  Run `Background_noise.ipynb` for data augmentation (pink noise) and class generation.
+4.  Upload the prepared data to **Edge Impulse Studio**, train the model, and export the Arduino library (`.zip`).
 
 ### **2. Telegram Alerting Setup**
+1.  **Create Bot:** Search for **@BotFather** on Telegram and use `/newbot` to get your **API Token**.
+2.  **Create Channel:** Create a **Private Channel** and add your bot as an **Administrator**.
+3.  **Retrieve Chat ID:** * Search for **@JsonDumpBot** in Telegram.
+    * Post a message in your private channel and **Forward** it to **@JsonDumpBot**.
+    * Retrieve your **ID** from the `"forward_from_chat"` section (the ID will start with `-100`).
 
-- Create a bot via **@BotFather** to obtain an **API Token**.
-- Create a private channel and add the bot as an **Administrator**.
-- Retrieve the **Chat ID** (typically starts with `100`).
-
-### **3. Cloud Infrastructure (GCP)**
-
-- Provision a **Compute Engine VM** and allow traffic on **TCP Port 1883**.
-- Create a BigQuery dataset and a table named `detection_table`.
+### **3. Google Cloud Platform (GCP) Configuration**
+1.  Provision a **Compute Engine VM** and assign a **Static External IP**.
+2.  Allow ingress traffic on **TCP Port 1883** in the firewall settings for MQTT communication.
+3.  Create a BigQuery dataset and a table named `detection_table`.
 
 ### **4. Deployment**
-
-- **Backend:** Run the Python bridge on your VM: `python3 cloud_bridge.py`.
-- **Firmware:** Update the Arduino sketch with WiFi, MQTT, and Telegram credentials; then flash the ESP32-S3.
-- **Visualization:** Connect BigQuery to **Looker Studio** for real-time reporting.
+1.  **Backend:** Run the subscriber bridge on your VM: `python3 nano_bridge_gcp.py`.
+2.  **Firmware:** Add the Edge Impulse `.zip` library to your Arduino IDE. Update your WiFi, MQTT, and Telegram credentials in the code and flash the ESP32-S3.
+3.  **Visualization:** Link the BigQuery table to **Looker Studio** for real-time reporting.
 
 ---
 
-🔗 Project Links
+## 🔗 Project Links
+* **YouTube Demo Video:** [INSERT YOUR VIDEO LINK HERE] 
+* **Looker Studio Dashboard:** [CPC357-Project](https://lookerstudio.google.com/) 
+* **GitHub Repository:** [INSERT YOUR GITHUB LINK HERE] 
 
-- **YouTube Demo Video:** [INSERT YOUR VIDEO LINK HERE]
-- **Looker Studio Dashboard:** [CPC357-Project](https://lookerstudio.google.com/u/0/reporting/f1bddb94-dd8f-44fd-a2ad-c9480ff11f2c/page/KJSkF/edit)
-- **GitHub Repository:** [INSERT YOUR GITHUB LINK HERE]
+## 👥 Group 30 Details 
+* **University:** Universiti Sains Malaysia (USM) 
+* **Course:** CPC357 - IoT Architecture & Smart Applications 
+* **Deadline:** 11 January 2026, 11pm 
+* **Group Members:**
+    1. Marcus Tan Tung Chean - 164952 
+    2. Ng Zi Jian - 164856 
 
-👥 Group 30 Details 
-
-- **Course:** CPC357 - IoT Architecture & Smart Applications
-- **University:** Universiti Sains Malaysia (USM)
-- **Deadline:** 11 January 2026
-- **Group Members:**
-    1. [Marcus Tan Tung Chean](https://github.com/Sn0wman8) - 164952
-    2. [Ng Zi jian](https://github.com/superyyds) - 164856
+---
+**Disclaimer:** This implementation is original work developed for the CPC357 course and complies with all USM academic integrity guidelines.
