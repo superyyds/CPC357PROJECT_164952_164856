@@ -6,16 +6,7 @@
 #include <CPC357_Project_inferencing.h> 
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
-
-// --- CONFIGURATION ---
-const char* ssid = "Peeee";
-const char* password = "244466666";
-const char* mqtt_server = "34.29.181.85"; 
-const char* device_id = "makerfeathers301";
-
-// Telegram Bot Configuration
-#define BOT_TOKEN "8153754842:AAHWcBv9ng1qQT4R0_dEeL1kQNaycGcQ7kE"
-#define CHAT_ID   "-1003408639046"
+#include <secret.h>
 
 // I2S Microphone Settings (INMP441)
 #define I2S_WS 38
@@ -142,7 +133,7 @@ void setup() {
 
     setup_external_leds();
     
-    WiFi.begin(ssid, password);
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
         Serial.print(".");
@@ -154,7 +145,7 @@ void setup() {
     const int daylightOffset_sec = 0;
     configTime(gmtOffset_sec, daylightOffset_sec, "pool.ntp.org", "time.nist.gov");
 
-    client.setServer(mqtt_server, 1883);
+    client.setServer(MQTT_SERVER, 1883);
     secured_client.setInsecure();
 
     // Allocate buffer based on the NEW model size automatically
@@ -235,7 +226,7 @@ bool is_loud_enough_rms(int16_t *buffer, size_t size, float threshold) {
 void loop() {
     // 1. MQTT Connection
     if (!client.connected()) {
-        if (client.connect(device_id)) {
+        if (client.connect(DEVICE_ID)) {
             Serial.println("MQTT Connected");
         }
     }
