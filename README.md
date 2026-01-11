@@ -67,7 +67,8 @@ The **INMP441** was selected for its high-fidelity 24-bit digital output, provid
 ### **2. Telegram Alerting Setup**
 1.  **Create Bot:** Search for **@BotFather** on Telegram and use `/newbot` to get your **API Token**.
 2.  **Create Channel:** Create a **Private Channel** and add your bot as an **Administrator**.
-3.  **Retrieve Chat ID:** * Search for **@JsonDumpBot** in Telegram.
+3.  **Retrieve Chat ID:**
+    * Search for **@JsonDumpBot** in Telegram.
     * Post a message in your private channel and **Forward** it to **@JsonDumpBot**.
     * Retrieve your **ID** from the `"forward_from_chat"` section (the ID will start with `-100`).
 
