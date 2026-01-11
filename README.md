@@ -17,7 +17,7 @@ Urban noise pollution is a significant challenge affecting the health and livabi
 ## 📂 Repository Structure & File Descriptions
 To ensure reproducibility, this repository is organized as follows:
 
-* **`cpcproject_inference.ino`**: The main firmware for the Maker Feather S3. It handles I2S audio capture, local TinyML inference, NTP time synchronization, and dual communication (MQTT + Telegram).
+* **`cpcproject_inference.ino`**: The main firmware for the Maker Feather S3. It handles I2S audio capture, local TinyML inference, NTP time synchronization and dual communication (MQTT + Telegram).
 * **`dataset_prep.py`**: A preprocessing script that resamples the UrbanSound8K dataset to 16kHz, standardizes audio to 4.0s, and creates a mixed-audio test set for robust validation.
 * **`Background_noise.ipynb`**: A Jupyter notebook used for data engineering. It applies pink noise filters for augmentation and generates a dedicated `background_noise` class to improve model accuracy.
 * **`nano_bridge_gcp.py`**: The cloud-side Python bridge deployed on a GCP VM. It subscribes to the MQTT topic and streams incoming detection metadata into Google BigQuery.
@@ -79,7 +79,7 @@ The **INMP441** was selected for its high-fidelity 24-bit digital output, provid
 
 ### **4. Deployment**
 1.  **Backend:** Run the subscriber bridge on your VM: `python3 nano_bridge_gcp.py`.
-2.  **Firmware:** Add the Edge Impulse `.zip` library to your Arduino IDE. Update your WiFi, MQTT, and Telegram credentials in the code and flash the ESP32-S3.
+2.  **Firmware:** Add the Edge Impulse `.zip` library to your Arduino IDE. Update your WiFi, MQTT and Telegram credentials in the code and flash the ESP32-S3.
 3.  **Visualization:** Link the BigQuery table to **Looker Studio** for real-time reporting.
 
 ---
